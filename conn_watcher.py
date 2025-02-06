@@ -13,7 +13,7 @@ REDIS_LAST_SEEN = "lorabridge:connection:last_seen"
 
 
 def check_connection():
-    threading.Timer(180.0, check_connection).start()
+    threading.Timer(60.0, check_connection).start()
     resp = api.DeviceServiceStub(channel).List(ld_req, metadata=auth_token)
 
     for dev in resp.result:
