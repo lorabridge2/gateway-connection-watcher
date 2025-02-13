@@ -30,7 +30,7 @@ with open("/token/token.json") as tfile:
 auth_token = [("authorization", f"Bearer {token}")]
 
 app_id = ""
-with open(f"/device/{DEV_EUI}.json") as dfile:
+with open(f"/device/{DEV_EUI.lower()}.json") as dfile:
     app_id = json.loads(dfile.read())["application_id"]
 
 ld_req = api.ListDevicesRequest()
