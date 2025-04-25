@@ -1,9 +1,11 @@
-import grpc
-from chirpstack_api import api
 import json
 import os
 import threading
+import traceback
+
+import grpc
 import redis
+from chirpstack_api import api
 
 CHIRP_HOST = os.environ.get("CHIRP_HOST", "chirpstack")
 CHIRP_PORT = int(os.environ.get("CHIRP_PORT", 8080))
@@ -14,7 +16,11 @@ REDIS_LAST_SEEN = "lorabridge:connection:last_seen"
 
 def check_connection():
     threading.Timer(60.0, check_connection).start()
-    resp = api.DeviceServiceStub(channel).List(ld_req, metadata=auth_token)
+    try:
+        resp = api.DeviceServiceStub(channel).List(ld_req, metadata=auth_token)
+    except grpc.RpcError:
+        print(traceback.format_exc())
+        os._exit(1)
 
     for dev in resp.result:
         if dev.dev_eui == DEV_EUI.lower():
